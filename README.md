@@ -19,6 +19,15 @@ ILLUMINACLIP:TruSeq3-PE.fa:2:30:10:1:true LEADING:3 TRAILING:3 SLIDINGWINDOW:4:1
 2. STAR was run with default parameters. The output was sorted and indexed with samtools prior to further analysis.
 
 ```
+STAR --runThreadN 6 \
+--runMode genomeGenerate \
+--genomeDir H_robusta \
+--genomeFastaFiles .fa \
+--sjdbGTFfile .gtf \
+--sjdbOverhang 149
+```
+
+```
 STAR --genomeDir /GENOMEDIR \
 --runThreadN 6 \
 --readFilesIn READFILE.fq \
