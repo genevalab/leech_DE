@@ -75,7 +75,7 @@ echo "done"
 
 2. STAR aligns reads from each sample to the reference genome
 
-<details><summary>trim.sh</summary>
+<summary>run_star.sh</summary>
 <p>
   
   ```
@@ -128,7 +128,6 @@ samtools index ${sample}_sorted.bam
 
 ```
 </p>
-</details>
 
 3. Feature counts were run in non-stranded fashion to collect counts from the provided reference annotation (passed to us in Dan’s emails) to summarize features across gene features based on the corresponding gene_name or gene_id annotation in the reference annotation files (depending on analyzed species).
 
