@@ -4,8 +4,35 @@ Differential expression analysis of leech developmental stages
 ## Overview
 1. Trimmomatic was run in paired end mode, with seed mismatches set to 2, palindrome clipping threshold set to 30 matches, simple clip threshold to 10 matches, and minimum adapter length to 1bp with the “keepBothPairs” option enabled. Leading and Trailing qualities were set to a value of 3. Sliding window size was set to 4bp, with a required quality of 15, and minimum read length was thresholded at 30bp.
 
+<details><summary>trim.sh</summary>
+<p>
+  
+  ```
+                                                                                                                               
+#!/bin/bash
 
-```
+#SBATCH --partition=p_ccib_1                    # which partition to run the job, options are in the Amarel guide
+#SBATCH --exclude=gpuc001,gpuc002               # exclude CCIB GPUs
+#SBATCH --job-name=fastqc_reseq                 # job name for listing in queue
+#SBATCH --output=slurm-%j-%x.out
+#SBATCH --mem=50G                               # memory to allocate in Mb
+#SBATCH -n 20                                   # number of cores to use
+#SBATCH -N 1                                    # number of nodes the cores should be on, 1 means all cores on same node
+#SBATCH --time=04:00:00                         # maximum run time days-hours:minutes:seconds
+#SBATCH --requeue                               # restart and paused or superseeded jobs
+#SBATCH --mail-user=YOUREMAIL@rutgers.edu          # email address to send status updates
+#SBATCH --mail-type=BEGIN,END,FAIL,REQUEUE      # email for the following reasons
+
+echo "load any Amarel modules that script requires"
+module purge                                    # clears out any pre-existing modules
+module load java                                # load any modules needed
+module load FastQC
+
+ sample=$1 
+  
+  
+echo "Bash commands for the analysis you are going to run" 
+  
 echo "#.......fastqc initial quality analysis on $sample.....#"
 fastqc -t 20 \
 ${sample}_R1_001.fastq.gz \
@@ -27,9 +54,13 @@ echo "#.......fastqc trimmomatic quality analysis on $sample......#"
 fastqc -t 20 \
 ${sample}_filtered.R1.fq \
 ${sample}_filtered.R2.fq \
--o /projects/f_geneva_1/jody/popgen/fastqc/out
+-o /projects/ccib/shain/fastqc/out
+  
+echo "done"
 
 ```
+</p>
+</details>
 
 
 2. STAR was run with default parameters. The output was sorted and indexed with samtools prior to further analysis.
@@ -43,26 +74,26 @@ gunzip GCF_000326865.1_Helobdella_robusta_v1.0_genomic.fna.gz
 mv GCF_000326865.1_Helobdella_robusta_v1.0_genomic.fna H_robusta_v1.fa
 
 
-STAR --runThreadN 6 \
+STAR --runThreadN 20 \
 --runMode genomeGenerate \
---genomeDir H_robusta \
+--genomeDir /projects/ccib/shain/H_robusta \
 --genomeFastaFiles H_robusta_v1.fa \
 --sjdbGTFfile H_robusta_v1.gtf \
 --sjdbOverhang 149
 ```
 
 ```
-STAR --genomeDir /GENOMEDIR \
---runThreadN 6 \
+STAR --genomeDir /projects/ccib/shain/H_robusta \
+--runThreadN 20 \
 --readFilesIn READFILE.fq \
---outFileNamePrefix  OUTFILENAME \
+--outFileNamePrefix  ${sample} \
 --outSAMtype BAM SortedByCoordinate \
 --outSAMunmapped Within \
 --outSAMattributes Standard 
 
-samtools sort
+samtools sort -@ 20 -o ${sample}_sorted.bam ${sample}.bam
 
-samtools index
+samtools index ${sample}_sorted.bam
 ```
 
 
