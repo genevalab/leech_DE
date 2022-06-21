@@ -7,6 +7,19 @@ Differential expression analysis of leech developmental stages
 
 2. STAR was run with default parameters. The output was sorted and indexed with samtools prior to further analysis.
 
+'''
+STAR --genomeDir /n/groups/hbctraining/intro_rnaseq_hpc/reference_data_ensembl38/ensembl38_STAR_index/ \
+--runThreadN 6 \
+--readFilesIn Mov10_oe_1.subset.fq \
+--outFileNamePrefix ../results/STAR/Mov10_oe_1_ \
+--outSAMtype BAM SortedByCoordinate \
+--outSAMunmapped Within \
+--outSAMattributes Standard 
+
+samtools sort
+
+samttols index
+'''
 
 
 3. Feature counts were run in non-stranded fashion to collect counts from the provided reference annotation (passed to us in Dan’s emails) to summarize features across gene features based on the corresponding gene_name or gene_id annotation in the reference annotation files (depending on analyzed species). The largest overlap option was turned on to ensure that reads were assigned to genes that they overlapped with best in the annotation.
