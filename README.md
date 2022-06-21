@@ -14,7 +14,7 @@ Differential expression analysis of leech developmental stages
 
 Code below can be run via the command ```sbatch trim.sh SAMPLENAME```
 
-<details><summary>trim.sh</summary>
+<summary>trim.sh</summary>
 <p>
   
   ```
@@ -70,7 +70,7 @@ echo "done"
 
 ```
 </p>
-</details>
+
 
 
 2. STAR aligns reads from each sample to the reference genome
