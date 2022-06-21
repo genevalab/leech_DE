@@ -6,13 +6,29 @@ Differential expression analysis of leech developmental stages
 
 
 ```
-#ILLUMINACLIP:<fastaWithAdaptersEtc>:<seed mismatches>:<palindrome clip threshold>:<simple clip threshold>:<minAdapterLength>:<keepBothReads>
-# SLIDINGWINDOW:<windowSize>:<requiredQuality> 
+echo "#.......fastqc initial quality analysis on $sample.....#"
+fastqc -t 20 \
+${sample}_R1_001.fastq.gz \
+${sample}_R2_001.fastq.gz \
+-o /projects/ccib/shain/fastqc/out #output directory
 
-java -jar trimmomatic-0.30.jar PE $SAMPLE_R1_001.fastq.gz $SAMPLE_R1_002.fastq.gz \
-lane1_forward_paired.fq.gz lane1_forward_unpaired.fq.gz \
-lane1_reverse_paired.fq.gz lane1_reverse_unpaired.fq.gz \
-ILLUMINACLIP:TruSeq3-PE.fa:2:30:10:1:true LEADING:3 TRAILING:3 SLIDINGWINDOW:4:15 MINLEN:30
+echo ""
+echo "#......trimmomatic.......#"
+java -jar /projects/f_geneva_1/programs/trimmomatic/trimmomatic-0.39.jar PE \
+-threads 20 -phred33 -trimlog ${sample}_trim.log \
+${sample}_R1_001.fastq.gz ${sample}_R2_001.fastq.gz \
+${sample}_filtered.R1.fq ${sample}_filtered.unpaired.R1.fq \
+${sample}_filtered.R2.fq ${sample}_filtered.unpaired.R2.fq \
+ILLUMINACLIP:/projects/f_geneva_1/programs/trimmomatic/adapters/TruSeq3-PE-2.fa\:2:30:10:1:true \
+LEADING:3 TRAILING:3 SLIDINGWINDOW:4:15 MINLEN:30
+
+echo ""
+echo "#.......fastqc trimmomatic quality analysis on $sample......#"
+fastqc -t 20 \
+${sample}_filtered.R1.fq \
+${sample}_filtered.R2.fq \
+-o /projects/f_geneva_1/jody/popgen/fastqc/out
+
 ```
 
 
