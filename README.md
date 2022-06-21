@@ -19,11 +19,19 @@ ILLUMINACLIP:TruSeq3-PE.fa:2:30:10:1:true LEADING:3 TRAILING:3 SLIDINGWINDOW:4:1
 2. STAR was run with default parameters. The output was sorted and indexed with samtools prior to further analysis.
 
 ```
+wget https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/326/865/GCF_000326865.1_Helobdella_robusta_v1.0/GCF_000326865.1_Helobdella_robusta_v1.0_genomic.gtf.gz
+gunzip GCF_000326865.1_Helobdella_robusta_v1.0_genomic.gtf.gz
+mv GCF_000326865.1_Helobdella_robusta_v1.0_genomic.gtf H_robusta_v1.gtf
+wget https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/326/865/GCF_000326865.1_Helobdella_robusta_v1.0/GCF_000326865.1_Helobdella_robusta_v1.0_genomic.fna.gz
+gunzip GCF_000326865.1_Helobdella_robusta_v1.0_genomic.fna.gz
+mv GCF_000326865.1_Helobdella_robusta_v1.0_genomic.fna H_robusta_v1.fa
+
+
 STAR --runThreadN 6 \
 --runMode genomeGenerate \
 --genomeDir H_robusta \
---genomeFastaFiles .fa \
---sjdbGTFfile .gtf \
+--genomeFastaFiles H_robusta_v1.fa \
+--sjdbGTFfile H_robusta_v1.gtf \
 --sjdbOverhang 149
 ```
 
