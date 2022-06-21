@@ -7,16 +7,10 @@ Differential expression analysis of leech developmental stages
 
 ```
 #ILLUMINACLIP:<fastaWithAdaptersEtc>:<seed mismatches>:<palindrome clip threshold>:<simple clip threshold>:<minAdapterLength>:<keepBothReads>
-
-ILLUMINACLIP:ADAPTERS.fa:2:30:10:1:true \
-LEADING:3
-TRAILING:3
-
 # SLIDINGWINDOW:<windowSize>:<requiredQuality> 
 
-SLIDINGWINDOW:4:15
-
-
+java -jar trimmomatic-0.30.jar PE s_1_1_sequence.txt.gz s_1_2_sequence.txt.gz lane1_forward_paired.fq.gz lane1_forward_unpaired.fq.gz lane1_reverse_paired.fq.gz lane1_reverse_unpaired.fq.gz ILLUMINACLIP:TruSeq3-PE.fa:2:30:10:1:true LEADING:3 TRAILING:3 SLIDINGWINDOW:4:15 MINLEN:30
+```
 
 
 2. STAR was run with default parameters. The output was sorted and indexed with samtools prior to further analysis.
