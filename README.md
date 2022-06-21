@@ -1,16 +1,19 @@
 # Leech Differential Expression Project
 Differential expression analysis of leech developmental stages
 
-
 ## Pipeline Steps
 1. Trimmomatic
 2. STAR
 3. Subread
 4. DESeq2
 
+![Pipeline Steps](https://hbctraining.github.io/Intro-to-rnaseq-hpc-O2/img/RNAseqWorkflow.png)
+
+Image from [HBC Training tutorial](https://hbctraining.github.io/Intro-to-rnaseq-hpc-O2/lessons/03_alignment.html)
+
 
 ## Detailed steps and code
-1. Trimmomatic is first used to remove sequencing adaptors and low quality bases
+1. [Trimmomatic](http://www.usadellab.org/cms/?page=trimmomatic) is first used to remove sequencing adaptors and low quality bases
 
 Code below can be run via the command ```sbatch trim.sh SAMPLENAME```
 
@@ -39,8 +42,7 @@ module load java                                # load any modules needed
 module load FastQC
 
 sample=$1 
-  
-  
+ 
 echo "Bash commands for the analysis you are going to run" 
   
 echo "#.......fastqc initial quality analysis on $sample.....#"
@@ -73,7 +75,7 @@ echo "done"
 
 
 
-2. STAR aligns reads from each sample to the reference genome
+2. [STAR](https://github.com/alexdobin/STAR) aligns reads from each sample to the reference genome
 
 <summary>run_star.sh</summary>
 <p>
@@ -129,10 +131,26 @@ samtools index ${sample}_sorted.bam
 ```
 </p>
 
-3. Feature counts were run in non-stranded fashion to collect counts from the provided reference annotation (passed to us in Dan’s emails) to summarize features across gene features based on the corresponding gene_name or gene_id annotation in the reference annotation files (depending on analyzed species).
+3. [Featurecounts](https://sourceforge.net/projects/subread/) counts the number of reads per gene
 
 ```
+#!/bin/bash
+
+#SBATCH --partition=p_ccib_1                    # which partition to run the job, options are in the Amarel guide
+#SBATCH --exclude=gpuc001,gpuc002               # exclude CCIB GPUs
+#SBATCH --job-name=STAR                      # job name for listing in queue
+#SBATCH --output=slurm-%j-%x.out
+#SBATCH --mem=50G                               # memory to allocate in Mb
+#SBATCH -n 20                                   # number of cores to use
+#SBATCH -N 1                                    # number of nodes the cores should be on, 1 means all cores on same node
+#SBATCH --time=04:00:00                         # maximum run time days-hours:minutes:seconds
+#SBATCH --requeue                               # restart and paused or superseeded jobs
+#SBATCH --mail-user=YOUREMAIL@rutgers.edu       # email address to send status updates
+#SBATCH --mail-type=BEGIN,END,FAIL,REQUEUE      # email for the following reasons
+
 featureCounts ${sample}_sorted.bam -a H_robusta_v1.gtf -F GTF \
 -G H_robusta_v1.fa -p -T 20 --largestOverlap -s 0
+```
 
-4. DESeq2
+4. [DESeq2](https://bioconductor.org/packages/release/bioc/html/DESeq2.html)
+*working on this based on [DESeq2 vignette](http://bioconductor.org/packages/devel/bioc/vignettes/DESeq2/inst/doc/DESeq2.html)
