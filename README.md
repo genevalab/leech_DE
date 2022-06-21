@@ -8,6 +8,8 @@ Differential expression analysis of leech developmental stages
 3. Subread
 4. DESeq2
 
+
+## Detailed steps and code
 1. Trimmomatic is first used to remove sequencing adaptors and low quality bases
 
 Code below can be run via the command ```sbatch trim.sh SAMPLENAME```
