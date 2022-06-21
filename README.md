@@ -9,7 +9,10 @@ Differential expression analysis of leech developmental stages
 #ILLUMINACLIP:<fastaWithAdaptersEtc>:<seed mismatches>:<palindrome clip threshold>:<simple clip threshold>:<minAdapterLength>:<keepBothReads>
 # SLIDINGWINDOW:<windowSize>:<requiredQuality> 
 
-java -jar trimmomatic-0.30.jar PE s_1_1_sequence.txt.gz s_1_2_sequence.txt.gz lane1_forward_paired.fq.gz lane1_forward_unpaired.fq.gz lane1_reverse_paired.fq.gz lane1_reverse_unpaired.fq.gz ILLUMINACLIP:TruSeq3-PE.fa:2:30:10:1:true LEADING:3 TRAILING:3 SLIDINGWINDOW:4:15 MINLEN:30
+java -jar trimmomatic-0.30.jar PE $SAMPLE_R1_001.fastq.gz $SAMPLE_R1_002.fastq.gz \
+lane1_forward_paired.fq.gz lane1_forward_unpaired.fq.gz \
+lane1_reverse_paired.fq.gz lane1_reverse_unpaired.fq.gz \
+ILLUMINACLIP:TruSeq3-PE.fa:2:30:10:1:true LEADING:3 TRAILING:3 SLIDINGWINDOW:4:15 MINLEN:30
 ```
 
 
