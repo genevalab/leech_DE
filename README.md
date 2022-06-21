@@ -1,15 +1,16 @@
 # Leech Differential Expression Project
 Differential expression analysis of leech developmental stages
 
-## Overview
 
-Pipeline Steps
+## Pipeline Steps
 1. Trimmomatic
 2. STAR
 3. Subread
 4. DESeq2
 
-1. Trimmomatic is used to remove sequencing adaptors and low quality bases
+1. Trimmomatic is first used to remove sequencing adaptors and low quality bases
+
+Code below can be run via the command ```sbatch trim.sh SAMPLENAME```
 
 <details><summary>trim.sh</summary>
 <p>
@@ -127,7 +128,10 @@ samtools index ${sample}_sorted.bam
 </p>
 </details>
 
-3. Feature counts were run in non-stranded fashion to collect counts from the provided reference annotation (passed to us in Dan’s emails) to summarize features across gene features based on the corresponding gene_name or gene_id annotation in the reference annotation files (depending on analyzed species). The largest overlap option was turned on to ensure that reads were assigned to genes that they overlapped with best in the annotation.
+3. Feature counts were run in non-stranded fashion to collect counts from the provided reference annotation (passed to us in Dan’s emails) to summarize features across gene features based on the corresponding gene_name or gene_id annotation in the reference annotation files (depending on analyzed species).
 
+```
+featureCounts ${sample}_sorted.bam -a H_robusta_v1.gtf -F GTF \
+-G H_robusta_v1.fa -p -T 20 --largestOverlap -s 0
 
 4. DESeq2
