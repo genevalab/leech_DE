@@ -113,9 +113,7 @@ STAR --runThreadN 20 \
 --genomeFastaFiles H_robusta_v1.fa \
 --sjdbGTFfile H_robusta_v1.gtf \
 --sjdbOverhang 149
-```
 
-```
 STAR --genomeDir /projects/ccib/shain/H_robusta \
 --runThreadN 20 \
 --readFilesIn ${sample}_R1.fastq.gz ${sample}_R2.fastq.gz \
