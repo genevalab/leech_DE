@@ -155,7 +155,7 @@ featureCounts ${sample}_sorted.bam -a H_robusta_v1.gtf -F GTF \
 
 Once all featureCounts has been run for all samples we need to combine the counts into a single count matrix before inputting them to DESeq2. This can be accomplished via text manipulation on the command line:
 ```
-ls -1  *counts.txt | parallel 'cat {} | sed '1d' | cut -f7 {} > {/.}_clean.txt' 
+for i in *counts.txt; do cut -f7 ${i} > ${i}_clean.txt ; done
 ls -1  *counts.txt | head -1 | xargs cut -f1 > genes.txt
 paste genes.txt *counts.txt_clean.txt > All_sample_count_matrix.txt
 ```
