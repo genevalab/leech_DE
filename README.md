@@ -73,7 +73,7 @@ echo "done"
 ```
 </p>
 
-2. Create Conda environment and install needed software: STAR and subread
+2. Create Conda environment and install needed software: [STAR](https://github.com/alexdobin/STAR) and [subread](https://sourceforge.net/projects/subread/)
 ```
 conda create --name STAR
 conda activate STAR
@@ -82,15 +82,9 @@ conda install -c bioconda subread
 
 ```
 
+3. Download and set up STAR genome files (only needs to be run once ever)
 
-
-3. [STAR](https://github.com/alexdobin/STAR) aligns reads from each sample to the reference genome
-
-<summary>run_star.sh</summary>
-<p>
-  
-  ```
-                                                                                                                               
+```
 #!/bin/bash
 
 #SBATCH --partition=p_ccib_1                    # which partition to run the job, options are in the Amarel guide
@@ -122,6 +116,34 @@ STAR --runThreadN 20 \
 --genomeFastaFiles H_robusta_v1.fa \
 --sjdbGTFfile H_robusta_v1.gtf \
 --sjdbOverhang 149
+
+```
+
+4. Align reads from each sample to the reference genome. Needs to be run for each sample. Execute by running ```sbatch run_star.sh SAMPLE_NAME```
+
+<summary>run_star.sh</summary>
+<p>
+  
+  ```
+                                                                                                                               
+#!/bin/bash
+
+#SBATCH --partition=p_ccib_1                    # which partition to run the job, options are in the Amarel guide
+#SBATCH --exclude=gpuc001,gpuc002               # exclude CCIB GPUs
+#SBATCH --job-name=STAR                      # job name for listing in queue
+#SBATCH --output=slurm-%j-%x.out
+#SBATCH --mem=50G                               # memory to allocate in Mb
+#SBATCH -n 20                                   # number of cores to use
+#SBATCH -N 1                                    # number of nodes the cores should be on, 1 means all cores on same node
+#SBATCH --time=04:00:00                         # maximum run time days-hours:minutes:seconds
+#SBATCH --requeue                               # restart and paused or superseeded jobs
+#SBATCH --mail-user=YOUREMAIL@rutgers.edu       # email address to send status updates
+#SBATCH --mail-type=BEGIN,END,FAIL,REQUEUE      # email for the following reasons
+
+echo "load any Amarel modules that script requires"
+module purge                                    # clears out any pre-existing modules
+ 
+sample=$1 
 
 STAR --genomeDir /projects/ccib/shain/H_robusta \
 --runThreadN 20 \
