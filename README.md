@@ -73,9 +73,18 @@ echo "done"
 ```
 </p>
 
+2. Create Conda environment and install needed software: STAR and subread
+```
+conda create --name STAR
+conda activate STAR
+conda install -c bioconda star 
+conda install -c bioconda subread
+
+```
 
 
-2. [STAR](https://github.com/alexdobin/STAR) aligns reads from each sample to the reference genome
+
+3. [STAR](https://github.com/alexdobin/STAR) aligns reads from each sample to the reference genome
 
 <summary>run_star.sh</summary>
 <p>
@@ -129,7 +138,7 @@ samtools index ${sample}_sorted.bam
 ```
 </p>
 
-3. [Featurecounts](https://sourceforge.net/projects/subread/) counts the number of reads per gene
+4. [Featurecounts](https://sourceforge.net/projects/subread/) counts the number of reads per gene
 
 ```
 #!/bin/bash
@@ -150,7 +159,7 @@ featureCounts ${sample}_sorted.bam -a H_robusta_v1.gtf -F GTF \
 -G H_robusta_v1.fa -p -T 20 --largestOverlap -s 0
 ```
 
-4. [DESeq2](https://bioconductor.org/packages/release/bioc/html/DESeq2.html)
+5. [DESeq2](https://bioconductor.org/packages/release/bioc/html/DESeq2.html)
 *working on this based on [DESeq2 vignette](http://bioconductor.org/packages/devel/bioc/vignettes/DESeq2/inst/doc/DESeq2.html)
 
 Once all featureCounts has been run for all samples we need to combine the counts into a single count matrix before inputting them to DESeq2. This can be accomplished via text manipulation on the command line:
