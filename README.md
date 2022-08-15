@@ -183,6 +183,7 @@ module purge
 eval "$(conda shell.bash hook)"
 conda activate STAR
 
+sample=$1 
 
 featureCounts ${sample}Aligned.sortedByCoord.out.bam -a H_robusta_v1.gtf -F GTF \
 -G H_robusta_v1.fa -p -T 20 --largestOverlap -s 0
