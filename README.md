@@ -169,7 +169,7 @@ STAR --genomeDir /projects/ccib/shain/H_robusta \
 
 #SBATCH --partition=p_ccib_1                    # which partition to run the job, options are in the Amarel guide
 #SBATCH --exclude=gpuc001,gpuc002               # exclude CCIB GPUs
-#SBATCH --job-name=STAR                      # job name for listing in queue
+#SBATCH --job-name=featCount                      # job name for listing in queue
 #SBATCH --output=slurm-%j-%x.out
 #SBATCH --mem=50G                               # memory to allocate in Mb
 #SBATCH -n 20                                   # number of cores to use
