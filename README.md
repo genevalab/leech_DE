@@ -142,7 +142,9 @@ STAR --runThreadN 20 \
 
 echo "load any Amarel modules that script requires"
 module purge                                    # clears out any pre-existing modules
- 
+eval "$(conda shell.bash hook)"
+conda activate STAR
+
 sample=$1 
 
 STAR --genomeDir /projects/ccib/shain/H_robusta \
@@ -153,9 +155,9 @@ STAR --genomeDir /projects/ccib/shain/H_robusta \
 --outSAMunmapped Within \
 --outSAMattributes Standard 
 
-samtools sort -@ 20 -o ${sample}_sorted.bam ${sample}.bam
+#samtools sort -@ 20 -o ${sample}_sorted.bam ${sample}.bam
 
-samtools index ${sample}_sorted.bam
+#samtools index ${sample}_sorted.bam
 
 ```
 </p>
@@ -177,7 +179,12 @@ samtools index ${sample}_sorted.bam
 #SBATCH --mail-user=YOUREMAIL@rutgers.edu       # email address to send status updates
 #SBATCH --mail-type=BEGIN,END,FAIL,REQUEUE      # email for the following reasons
 
-featureCounts ${sample}_sorted.bam -a H_robusta_v1.gtf -F GTF \
+module purge
+eval "$(conda shell.bash hook)"
+conda activate STAR
+
+
+featureCounts ${sample}Aligned.sortedByCoord.out.bam -a H_robusta_v1.gtf -F GTF \
 -G H_robusta_v1.fa -p -T 20 --largestOverlap -s 0
 ```
 
