@@ -199,3 +199,101 @@ ls -1  *counts.txt | head -1 | xargs cut -f1 > genes.txt
 paste genes.txt *counts.txt_clean.txt > All_sample_count_matrix.txt
 ```
 
+You also need to create a sample file that lists the information about your samples. In a text editor make a file for your samples that matches the format below
+```
+	condition        type	seq_run
+x4a10	4	paired-end	1
+x4a22	4	paired-end	1
+x4b24	4	paired-end	1
+x4c15_ACME	4	paired-end	1
+x4c15	4	paired-end	1
+Aus0A	0	paired-end	2
+Aus0B	0	paired-end	2
+Aus2A	2	paired-end	2
+Aus3B	3	paired-end	2
+Aus4A	4	paired-end	2
+Aus6C	6	paired-end	2
+St3_20_ACME	3	paired-end	1
+```
+
+Now we are ready to run DESeq2. The following is the code I created to do a basic analysis comparing Stages 0 and 4. Use this as a template to create your own code.
+
+```
+# Set up required packages ------------------------------------------------
+
+# check if BioManager is installed and if not, install it
+if (!require("BiocManager", quietly = TRUE))
+  install.packages("BiocManager")
+
+# check if DESeq2 is installed and if not, install it
+if (!require("DESeq2", quietly = TRUE))
+BiocManager::install("DESeq2")
+
+# load DESeq2 library
+library("DESeq2")
+
+
+# Read in data ------------------------------------------------------------
+cts <- read.table("All_sample_count_matrix.txt", header=T, row.names=1)
+coldata <- as.matrix(read.table("sample_info.txt", row.names=1))
+
+
+# Organize data for DESeq2 format -----------------------------------------
+#reduce samples to only include those in coldata
+cts <- cts[,colnames(cts) %in% rownames(coldata)]
+
+#confirm data in both objects match
+all(rownames(coldata) %in% colnames(cts))
+
+
+# create DESeq2 data object -----------------------------------------------
+dds <- DESeqDataSetFromMatrix(countData = cts,
+                              colData = coldata,
+                              design = ~ condition)
+
+
+# perform DESeq 2 analyses ------------------------------------------------
+dds <- DESeq(dds)
+
+#run different comparisons
+  # 0 v 4
+res <- results(dds, contrast=c("condition","0","4"), alpha=0.05)
+resOrdered <- res[order(res$pvalue),]
+
+# write ordered results to file
+write.csv(as.data.frame(resOrdered), 
+          file="Stage0_vs_Stage4_all_results.csv")
+
+resSig <- subset(resOrdered, padj < 0.05)
+resSig_negative <- resSig[which(resSig$log2FoldChange<0),]
+resSig_positive <- resSig[which(resSig$log2FoldChange>0),]
+
+
+
+# Create output figures ----------------------------------------------------
+
+# plot of log fold change and counts for all genes
+plotMA(res, ylim=c(-2,2))
+
+# plots of the counts for the 100 most significant genes
+pdf(width=8, height=10, file="top100genes_stage0v4.pdf")
+par(mfrow=c(3,2))
+for (i in 1:100)
+plotCounts(dds, gene=rownames(resOrdered)[i], intgroup="condition", xlab="Stage")
+dev.off()
+
+# plots of the counts for the 100 most significant genes where stage 4 greater
+pdf(width=8, height=10, file="top100genes_stage0v4_negative.pdf")
+par(mfrow=c(3,2))
+for (i in 1:100)
+  plotCounts(dds, gene=rownames(resSig_negative)[i], intgroup="condition", xlab="Stage")
+dev.off()
+
+# plots of the counts for the 100 most significant genes where stage 0 greater
+pdf(width=8, height=10, file="top100genes_stage0v4_positive.pdf")
+par(mfrow=c(3,2))
+for (i in 1:100)
+  plotCounts(dds, gene=rownames(resSig_positive)[i], intgroup="condition", xlab="Stage")
+dev.off()
+
+```
