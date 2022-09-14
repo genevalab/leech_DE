@@ -189,8 +189,7 @@ featureCounts ${sample}Aligned.sortedByCoord.out.bam -a H_robusta_v1.gtf -F GTF 
 -G H_robusta_v1.fa -p -T 20 --largestOverlap -s 0
 ```
 
-5. [DESeq2](https://bioconductor.org/packages/release/bioc/html/DESeq2.html)
-analysis based on this [DESeq2 vignette](http://bioconductor.org/packages/devel/bioc/vignettes/DESeq2/inst/doc/DESeq2.html)
+5. Prepare input files for DESeq2 analyis
 
 Once all featureCounts has been run for all samples we need to combine the counts into a single count matrix before inputting them to DESeq2. This can be accomplished via text manipulation on the command line:
 ```
@@ -198,6 +197,7 @@ for i in *counts.txt; do cut -f7 ${i} > ${i}_clean.txt ; done
 ls -1  *counts.txt | head -1 | xargs cut -f1 > genes.txt
 paste genes.txt *counts.txt_clean.txt > All_sample_count_matrix.txt
 ```
+
 
 You also need to create a sample file that lists the information about your samples. In a text editor make a file for your samples that matches the format below
 ```
@@ -216,6 +216,9 @@ Aus6C	6	paired-end	2
 St3_20_ACME	3	paired-end	1
 ```
 
+
+6. [DESeq2](https://bioconductor.org/packages/release/bioc/html/DESeq2.html)
+analysis based on this [DESeq2 vignette](http://bioconductor.org/packages/devel/bioc/vignettes/DESeq2/inst/doc/DESeq2.html)
 Now we are ready to run DESeq2. The following is the code I created to do a basic analysis comparing Stages 0 and 4. Use this as a template to create your own code.
 
 ```
