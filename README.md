@@ -196,6 +196,9 @@ Once all featureCounts has been run for all samples we need to combine the count
 for i in *counts.txt; do cut -f7 ${i} > ${i}_clean.txt ; done
 ls -1  *counts.txt | head -1 | xargs cut -f1 > genes.txt
 paste genes.txt *counts.txt_clean.txt > All_sample_count_matrix.txt
+sed -i 's/Aligned.sortedByCoord.out.bam//g' All_sample_count_matrix.txt
+sed -i 's/-$//g' All_sample_count_matrix.txt
+sed -i 's/-\t/\t/g' All_sample_count_matrix.txt
 ```
 
 
