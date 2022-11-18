@@ -199,6 +199,7 @@ paste genes.txt *counts.txt_clean.txt > All_sample_count_matrix.txt
 sed -i 's/Aligned.sortedByCoord.out.bam//g' All_sample_count_matrix.txt
 sed -i 's/-$//g' All_sample_count_matrix.txt
 sed -i 's/-\t/\t/g' All_sample_count_matrix.txt
+sed '2s/\t\([0-9]\)/\tx\1/g' All_sample_count_matrix.txt
 ```
 
 
