@@ -305,3 +305,8 @@ for (i in 1:100)
 dev.off()
 
 ```
+
+
+7. Alterntive Analysis Idea - Analzye states as a time series using maSigPro
+
+https://www.bioconductor.org/packages/release/bioc/html/maSigPro.html
